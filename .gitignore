@@ -31,11 +31,11 @@ replay_pid*
 .gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-# Gradle Wrapper
-gradle-wrapper.properties
+# Gradle Wrapper - allow wrapper files
 
 # IntelliJ IDEA
 .idea/
