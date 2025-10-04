@@ -59,30 +59,39 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: 21
-        distribution: 'temurin'
-    
     - name: Set up GraalVM
       uses: graalvm/setup-graalvm@v1
       with:
-        version: '22.3.2'
+        version: '22.3.1'
         java-version: '21'
         components: 'native-image'
+        set-java-home: true
+    
+    - name: Verify GraalVM installation
+      run: |
+        echo "JAVA_HOME: $JAVA_HOME"
+        echo "GRAALVM_HOME: $GRAALVM_HOME"
+        which java
+        java -version
+        which gu
+        gu --version
       continue-on-error: true
     
-    - name: Fallback - Install GraalVM manually
+    - name: Fallback - Manual GraalVM installation
       if: failure()
       run: |
-        echo "GraalVM setup failed, trying manual installation..."
-        wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-23.0.1/graalvm-ce-java21-23.0.1-linux-amd64.tar.gz
-        tar -xzf graalvm-ce-java21-23.0.1-linux-amd64.tar.gz
-        export GRAALVM_HOME=$PWD/graalvm-ce-java21-23.0.1
+        echo "GraalVM action failed, installing manually..."
+        wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java21-22.3.1-linux-amd64.tar.gz
+        tar -xzf graalvm-ce-java21-22.3.1-linux-amd64.tar.gz
+        export GRAALVM_HOME=$PWD/graalvm-ce-java21-22.3.1
+        export JAVA_HOME=$GRAALVM_HOME
         export PATH=$GRAALVM_HOME/bin:$PATH
         echo "GRAALVM_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
+        echo "JAVA_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
         echo "PATH=$GRAALVM_HOME/bin:$PATH" >> $GITHUB_ENV
+        echo "Verifying manual installation:"
+        java -version
+        gu --version
     
     - name: Cache Gradle packages
       uses: actions/cache@v4
