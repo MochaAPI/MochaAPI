@@ -68,7 +68,7 @@ jobs:
     - name: Set up GraalVM
       uses: graalvm/setup-graalvm@v1
       with:
-        version: '23.0.1'
+        version: '22.3.2'
         java-version: '21'
         components: 'native-image'
       continue-on-error: true
@@ -98,15 +98,15 @@ jobs:
       run: chmod +x ./gradlew
     
     - name: Build native image
-      run: ./gradlew nativeImage
+      run: ./gradlew :examples:nativeCompile
     
     - name: Test native image
       run: |
-        ./build/native/nativeCompile/mochaapi-example &
+        ./examples/build/native/nativeCompile/examples &
         sleep 5
         curl -f http://localhost:8080/ || exit 1
         curl -f http://localhost:8080/health || exit 1
-        pkill -f mochaapi-example
+        pkill -f examples
 
   publish:
     runs-on: ubuntu-latest
