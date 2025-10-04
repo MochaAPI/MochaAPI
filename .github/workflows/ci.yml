@@ -39,12 +39,17 @@ jobs:
     - name: Run tests
       run: ./gradlew test --continue
     
+    - name: List test results
+      run: |
+        find . -name "*.xml" -path "*/test-results/*" | head -20
+        find . -name "build" -type d | head -10
+    
     - name: Generate test report
       uses: dorny/test-reporter@v1
       if: always()
       with:
         name: Gradle Tests
-        path: build/test-results/test/*.xml
+        path: '**/build/test-results/test/*.xml'
         reporter: java-junit
 
   native-image:
